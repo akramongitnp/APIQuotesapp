@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, {useState, useEffect} from 'react'
-import Icon from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 function Main() {
   const [isLoading, setLoading] = useState(false)
@@ -27,6 +27,7 @@ function Main() {
             <Text style={{marginLeft: '70%', color: '#A6F32C'}}>____{isLoading ? 'Loading...' : Author}</Text>
             <View style={styles.btnBox}>
                 <TouchableOpacity style={{padding: 15, borderRadius: 20, backgroundColor: isLoading ? '#FF5252' : '#A6F32C'}}><Text style={{fontWeight:'bold', color: '#fff'}} onPress={randomQuote}>{isLoading ? 'Loading...' : 'New Quotes'}</Text></TouchableOpacity>
+                <Icon name="md-menu" size={30}/>
             </View>
         </View>
         
