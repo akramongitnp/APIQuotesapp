@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
+import Tts from 'react-native-tts';
 
 function Main() {
   const [isLoading, setLoading] = useState(false)
@@ -16,6 +17,16 @@ function Main() {
       setLoading(false)
     })
   }
+  
+  const audio = () => {
+    try {
+      Tts.speak('Hello World');
+    }
+    catch {
+      console.log('Facing error')
+    }
+  }
+
   useEffect(() => {
     randomQuote();
   }, []);
@@ -27,7 +38,12 @@ function Main() {
             <Text style={{marginLeft: '70%', color: '#A6F32C'}}>____{isLoading ? 'Loading...' : Author}</Text>
             <View style={styles.btnBox}>
                 <TouchableOpacity style={{padding: 15, borderRadius: 20, backgroundColor: isLoading ? '#FF5252' : '#A6F32C'}}><Text style={{fontWeight:'bold', color: '#fff'}} onPress={randomQuote}>{isLoading ? 'Loading...' : 'New Quotes'}</Text></TouchableOpacity>
-                <Icon name="md-menu" size={30}/>
+            </View>
+            <View style={styles.exBtnBox}>
+              <TouchableOpacity style={styles.exBtn} onPress={audio}><Icon name="musical-notes-outline" size={30}/></TouchableOpacity>
+              <TouchableOpacity style={styles.exBtn}><Icon name="copy-outline" size={30}/></TouchableOpacity>
+              <TouchableOpacity style={styles.exBtn}><Icon name="share-social-outline" size={30}/></TouchableOpacity>
+              <TouchableOpacity style={styles.exBtn}><Icon name="settings-outline" size={30}/></TouchableOpacity>
             </View>
         </View>
         
@@ -62,7 +78,14 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       flexDirection: 'row',
       padding: 15
-
+  },
+  exBtnBox: {
+    alignItems: 'center',
+      flexDirection: 'row',
+      padding: 15
+  },
+  exBtn: {
+    padding:20
   }
 });
 
