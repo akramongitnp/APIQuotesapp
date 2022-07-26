@@ -1,25 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Alert, ToastAndroid } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Alert, ToastAndroid, StatusBar, Dimensions,ImageBackground, TouchableWithoutFeedback} from 'react-native'
 import React, {useState, useEffect} from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Tts from 'react-native-tts';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { Button } from 'react-native-web';
+//import Carousel from 'react-native-snap-carousel';
 /*import Snackbar from 'react-native-snackbar';*/
+import News from './news';
+
+const windowHeight = Dimensions.get('window').height
+const windowWidth = Dimensions.get('window').width
 
 function Main({navigation}) {
   const [isLoading, setLoading] = useState(false)
   const [Quote, setQuote] = useState('Loading...')
-  const [Author, setAuthor] = useState('Loading...')
-  const [window, setwindow] = useState(false)
+  //const [Author, setAuthor] = useState('Loading...')
+  const [window, setWindow] = useState(false)
+  const [image, setImage] = useState('../assets/Fidget-spinner.gif')
+  const [counter, setCounter] = useState(1)
 
   const randomQuote = () => {
     setLoading(true)
     fetch("https://api.quotable.io/random").then(res => res.json()).then(result => {
-      setQuote(result.content)
-      setAuthor(result.author)
+      setQuote(result)
+      //setAuthor(result.author)
       setLoading(false)
     })
+    let tempImg = 'https://picsum.photos/id/'+ counter +'/1080/720'
+    setImage(tempImg)
+    const icounter = counter + 1
+    setCounter(icounter)
+    console.log(image)
+
   }
   
   const audio = () => {
@@ -41,7 +52,7 @@ function Main({navigation}) {
   };
 
   const popupWin = () => {
-    setwindow(true)
+    setWindow(true)
   }
 
   useEffect(() => {
@@ -49,31 +60,41 @@ function Main({navigation}) {
   }, []);
   return (
     <View style={styles.container}>
-        <View style={styles.main}>
-            <Text style={{marginBottom: 25,marginTop: 25 , color: '#A6F32C', fontWeight: 'bold', fontSize: 25}}>Quots of the Day</Text>
-            <Text style={styles.txtMain}>{isLoading ? 'Loading...' : Quote}</Text>
-            <Text style={{marginLeft: '70%', color: '#A6F32C'}}>____{isLoading ? 'Loading...' : Author}</Text>
-            <View style={styles.btnBox}>
-                <TouchableOpacity style={{padding: 15, borderRadius: 20, backgroundColor: isLoading ? '#FF5252' : '#A6F32C'}}><Text style={{fontWeight:'bold', color: '#fff'}} onPress={randomQuote}>{isLoading ? 'Loading...' : <Icon name="refresh-outline" size={30}/>}</Text></TouchableOpacity>
-            </View>
-            <View style={styles.exBtnBox}>
-              <TouchableOpacity style={styles.exBtn} onPress={audio}><Icon name="musical-notes-outline" size={30}/></TouchableOpacity>
-              <TouchableOpacity style={styles.exBtn} onPress={copyToClipboard}><Icon name="copy-outline" size={30}/></TouchableOpacity>
-              <TouchableOpacity style={styles.exBtn}><Icon name="share-social-outline" size={30}/></TouchableOpacity>
-              <TouchableOpacity style={styles.exBtn} onPress={popupWin}><Icon name="settings-outline" size={30}/></TouchableOpacity>
-            </View>
-        </View>
-        
-        <StatusBar style="auto" />
-        <Modal transparent={true} visible={window} animationType='fade' onRequestClose={() => {setwindow(false)}}>
-          <View style={styles.modalView}>
-            <View style={styles.cardView}>
-              <Text>This s a Popup Window</Text>
-              <TouchableOpacity style={styles.exBtn} onPress={() => {navigation.navigate('Login')}}><Text>Login</Text></TouchableOpacity>
-              <TouchableOpacity style={styles.exBtn} onPress={() => {setwindow(false)}}><Text>Customize</Text></TouchableOpacity>
+      <View style={styles.topBox}>
+        <ImageBackground source={{uri: image}} style={{width: '100%', height: '100%'}}>
+          <View style={{alignItems: 'flex-end', justifyContent: 'flex-start', margin: 20}}>
+            <Icon name='ellipsis-vertical' size={25} color={'#fff'} onPress={popupWin}/>  
+            <Modal transparent={true} visible={window} animationType='fade' onRequestClose={() => {setWindow(false)}}>
+              <View style={{alignItems: 'flex-end', justifyContent: 'flex-start'}}>
+                <View style={styles.modalView}>
+                  <TouchableOpacity style={{padding: 5}}><Icon name='share-social' size={18}><Text style={{fontSize: 15}}>Share</Text></Icon></TouchableOpacity>
+                  <TouchableOpacity style={{padding: 5}}><Icon name='copy' size={18}><Text style={{fontSize: 15}}>Copy</Text></Icon></TouchableOpacity>
+                  <TouchableOpacity style={{padding: 5}}><Icon name='play' size={18}><Text style={{fontSize: 15}}>Play</Text></Icon></TouchableOpacity>
+                  <TouchableOpacity style={{padding: 5}}><Icon name='close-circle' size={18} onPress={() => {setWindow(false)}}><Text style={{fontSize: 15}}>Close</Text></Icon></TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </View>
+        </ImageBackground>
+      </View>
+      <View style={styles.buttomBox}>
+        <View style={{width: '100%', height: '100%'}}>
+          <View style={styles.mainBox}>
+            <Icon name="person-circle-outline" size={16} style={{alignItems: 'center'}}><Text style={{fontSize: 15}}>{Quote.author}</Text></Icon>
+            <Text>{Quote.dateAdded}</Text>
+          </View>
+          <View style={{width: '80%', height: '40%'}}>
+            <View style={styles.mainBox}>
+              <Text>{Quote.content}</Text>
             </View>
           </View>
-        </Modal>
+          <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+            <View style={styles.mainBox}>
+              <TouchableOpacity onPress={randomQuote} style={styles.reloadBtn}><Icon name="refresh-outline" size={30} color={'white'}/></TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
     </View>
   )
 }
@@ -81,20 +102,24 @@ function Main({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#A6F32C',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: StatusBar.currentHeight,
   },
-  main: {
-    backgroundColor: 'white',
-    /*height: '50%',
-    width: '85%',*/
-    margin: 5,
+  topBox: {
+    flex: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 50,
-    padding: 20,
-
+    backgroundColor: '#EFEFEF',
+    width: '100%',
+  },
+  buttomBox: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: "space-between",
+    backgroundColor: '#F8F8F7',
+    width: '100%',
+    shadowColor: "#EFEFEF"
   },
   txtMain: {
     color: '#A6F32C',
@@ -102,38 +127,31 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   btnBox: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      padding: 15
+      alignItems: 'flex-end',
+      backgroundColor: 'blue'
   },
-  exBtnBox: {
+  mainBox: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    justifyContent: "space-between",
+    margin: 20,
+  },
+  reloadBtn: {
+    width: 65,
+    height: 65,
+    backgroundColor: 'green',
+    borderRadius: 35,
     alignItems: 'center',
-      flexDirection: 'row',
-      padding: 15
-  },
-  exBtn: {
-    padding:20
+    justifyContent: 'center',
   },
   modalView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  cardView: {
-    margin: 50,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
+    backgroundColor: '#fff',
+    width: 120,
+    height: 140,
+    margin: 30,
+    marginTop: 60,
+    padding: 10,
+    borderRadius: 5,
   }
 });
 
