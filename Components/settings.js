@@ -1,14 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, StatusBar } from 'react-native'
 import React from 'react'
+import Header from './header.js'
 
-function Settings () {
+function Settings() {
   return (
     <View style={styles.container}>
+      <Header />
       <View>
-        <Text>Thinker</Text>
-      </View>
-      <View>
-        <Text>Options</Text>
+        <Text>Settings</Text>
       </View>
     </View>
   )
@@ -17,9 +16,8 @@ function Settings () {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    marginTop: StatusBar.currentHeight
   }
 })
 
-export default Settings
+export default Settings;

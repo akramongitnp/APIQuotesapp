@@ -19,7 +19,7 @@ function ButtomTab() {
                 headerShown : false,
                 tabBarIcon: () => {return <Icon name='play-circle' size={20}/>}
             }}/>
-            <Tab.Screen name='Setting' component={Settings} options={{
+            <Tab.Screen name='Settings' component={Settings} options={{
                 headerShown : false,
                 tabBarIcon: () => {return <Icon name='settings' size={20}/>}
             }}/>

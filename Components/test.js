@@ -1,12 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-function Test () {
+export default function Reels() {
   return (
     <View>
-      <Text>Test</Text>
+      <Text>Hello World!</Text>
     </View>
   )
 }
-
-export default Test
